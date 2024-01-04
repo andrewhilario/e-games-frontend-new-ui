@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+
 import BettorDashboardCard from "@/components/bettor/dashboard-card/BettorDashboardCard";
 import BettorNavbar from "@/components/navbar/BettorNavbar";
 import BettorSideNav from "@/components/sidebar-nav/BettorSideNav";

@@ -98,6 +98,11 @@ const Modal = (props: ModalProps) => {
                 disabled
                 className="border-[#A3A4A5] border-[1px] rounded-full mt-4 px-4 py-2 w-full bg-[#F2F2F2]"
               />
+              <input
+                type="password"
+                placeholder="Enter Password"
+                className="border-[#A3A4A5] border-[1px] rounded-full mt-4 px-4 py-2 w-full "
+              />
               <div className="flex justify-between mt-5">
                 <div className="flex gap-4 text-xs md:text-base">
                   <input type="checkbox" name="remember" id="" />

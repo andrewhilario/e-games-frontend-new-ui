@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import BettorLeague from "@/components/bettor/league/BettorLeague";
 import BettorNavbar from "@/components/navbar/BettorNavbar";
 import BettorSideNav from "@/components/sidebar-nav/BettorSideNav";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import ChooseBets from "./[id]/page";
 
 type LeaguesProps = {};

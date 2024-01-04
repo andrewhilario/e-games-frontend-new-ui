@@ -2,11 +2,16 @@
 import BettorPlaceBet from "@/components/bettor/league/BettorPlaceBet";
 import BettorNavbar from "@/components/navbar/BettorNavbar";
 import BettorSideNav from "@/components/sidebar-nav/BettorSideNav";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import pbaTeamOne from "@/public/images/converge-pba-team.svg";
 import pbaTeamTwo from "@/public/images/nortport-pba-team.svg";
 import pbaTeamThree from "@/public/images/blackwater-pba-team.svg";
 import pbaTeamFour from "@/public/images/magnolia-pba-team.svg";
+import { useParams } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { betCountSlice, betPairsSlice } from "@/app/redux/features/bet-pairs";
+import { stat } from "fs";
+import useGetMatchIdDetails from "@/hooks/useGetMatchIdDetails";
 
 type ChooseBetsProps = {};
 
@@ -15,9 +20,16 @@ type ButtonProps = {
   selected: boolean;
   occupied: boolean;
   onClick: () => void;
+  onChange: () => void;
 };
 
 const ChooseBets = (props: ChooseBetsProps) => {
+  const { id } = useParams();
+  const betPairs = useSelector((state: any) => state.betPairs);
+  const betCount = useSelector((state: any) => state.betCount);
+  const dispatch = useDispatch();
+
+  const matchDetails = useGetMatchIdDetails(id as string);
   const [open, setOpen] = React.useState<boolean>(false);
   const [setPlaceBet, setShowPlaceBet] = useState<boolean>(false);
 
@@ -27,14 +39,21 @@ const ChooseBets = (props: ChooseBetsProps) => {
   const pairs = [];
 
   const handleButtonClick = (pair: string) => {
-    // Toggle selected state
-    setSelectedButtons((prevSelected) => {
-      if (prevSelected.includes(pair)) {
-        return prevSelected.filter((p) => p !== pair);
-      } else {
-        return [...prevSelected, pair];
-      }
-    });
+    // Toggle selected stat
+
+    if (!selectedButtons.includes(pair)) {
+      dispatch(betPairsSlice.actions.addBetPairs(pair));
+      dispatch(betCountSlice.actions.increment());
+    } else {
+      dispatch(betPairsSlice.actions.removeBetPairs(pair));
+      dispatch(betCountSlice.actions.decrement());
+    }
+
+    setSelectedButtons((prevSelected) =>
+      prevSelected.includes(pair)
+        ? prevSelected.filter((p) => p !== pair)
+        : [...prevSelected, pair]
+    );
   };
 
   const isOccupied = (pair: string) => occupiedButtons.includes(pair);
@@ -45,17 +64,24 @@ const ChooseBets = (props: ChooseBetsProps) => {
     }
   }
 
+  useEffect(() => {
+    console.log(betPairs);
+    console.log(matchDetails);
+  }, [betPairs, matchDetails]);
+
   const Button: React.FC<ButtonProps> = ({
     pair,
     selected,
     occupied,
-    onClick
+    onClick,
+    onChange
   }) => (
     <button
       className={`flex justify-around items-center gap-2 md:gap-4 px-2 py-3 ${
         selected ? "bg-[#5025B4]" : "bg-[#391A80]"
       } rounded-lg`}
       onClick={onClick}
+      onChange={onChange}
     >
       <p
         className={`text-sm md:text-xl font-medium ${
@@ -137,11 +163,13 @@ const ChooseBets = (props: ChooseBetsProps) => {
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="text-[#C9BBE8] text-xs">Bet Count</p>
-                    <p className="text-[#C9BBE8] text-xs">10</p>
+                    <p className="text-[#C9BBE8] text-xs">{betCount.count}</p>
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="text-[#C9BBE8] text-xs">Total</p>
-                    <p className="text-[#C9BBE8] text-xs">₱ 300</p>
+                    <p className="text-[#C9BBE8] text-xs">
+                      ₱ {betCount.count * 30}
+                    </p>
                   </div>
                 </div>
                 <button
@@ -160,14 +188,8 @@ const ChooseBets = (props: ChooseBetsProps) => {
                   selected={isSelected(pair)}
                   occupied={isOccupied(pair)}
                   onClick={() => handleButtonClick(pair)}
+                  onChange={() => console.log("changed")}
                 />
-                // <button
-                //   key={index}
-                //   className="flex justify-around items-center gap-4 px-2 py-3 bg-[#391A80] rounded-lg"
-                // >
-                //   <p className="text-[#EEE9F8] text-xl font-medium">{pair}</p>
-                //   <div className="w-4 h-4 bg-white rounded-sm"></div>
-                // </button>
               ))}
             </div>
           </div>
@@ -178,6 +200,8 @@ const ChooseBets = (props: ChooseBetsProps) => {
             teamOneName="Converge Fiberxers"
             teamTwoImg={pbaTeamTwo.src}
             teamTwoName="Northport Batang Pier"
+            betCount={betCount.count as number}
+            betPrice={30 as number}
           />
         )}
       </div>

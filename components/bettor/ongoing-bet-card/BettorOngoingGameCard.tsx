@@ -35,14 +35,16 @@ const BettorOngoingGameCard = (props: BettorOngoingGameCardProps) => {
         </div>
         <div className="flex justify-between items-center mt-4">
           <div className="flex flex-col items-center justify-center gap-4">
-            <img src={props.teamOneImg} alt="" className="h-14 w-34" />
-            <p className="text-[#C9BBE8]">{props.teamOneName}</p>
+            <img src={props.teamOneImg} alt="" className="h-24 w-24" />
+            <p className="text-[#C9BBE8] w-2/3 text-center">
+              {props.teamOneName}
+            </p>
           </div>
           <div className="flex flex-col items-center justify-center gap-4">
             <p className="text-[#5025B4]">VS</p>
           </div>
           <div className="flex flex-col items-center justify-center gap-4">
-            <img src={props.teamTwoImg} alt="" className="h-14 w-34" />
+            <img src={props.teamTwoImg} alt="" className="h-24 w-24" />
             <p className="text-[#C9BBE8]">{props.teamTwoName}</p>
           </div>
         </div>

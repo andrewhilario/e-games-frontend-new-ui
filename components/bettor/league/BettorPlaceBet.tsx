@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import backIcon from "@/public/images/back-icon.svg";
 import BettorPayNow from "./BettorPayNow";
+import { useSelector } from "react-redux";
 
 type BettorPlaceBetProps = {
   onClick: () => void;
@@ -9,6 +10,8 @@ type BettorPlaceBetProps = {
   teamOneName: string;
   teamTwoImg?: string;
   teamTwoName: string;
+  betCount?: number;
+  betPrice?: number;
 };
 
 const betConstant = [
@@ -46,6 +49,13 @@ const betConstant = [
 
 const BettorPlaceBet = (props: BettorPlaceBetProps) => {
   const [setPayNow, setShowPayNow] = useState<boolean>(false);
+  const betPairs = useSelector((state: any) => state.betPairs);
+  const betCount = useSelector((state: any) => state.betCount);
+
+  useEffect(() => {
+    console.log(betPairs);
+  }, [betPairs]);
+
   return (
     <>
       {!setPayNow ? (
@@ -71,7 +81,7 @@ const BettorPlaceBet = (props: BettorPlaceBetProps) => {
             <div className="flex flex-col justify-center items-center rounded-md bg-[#391A80] gap-4 w-[90%] md:w-1/3 px-4 py-8 mx-auto">
               <p className="text-md text-[#7351C3]">Game Details</p>
               <p className="p-2 bg-[#4922A4] text-[#C9BBE8] rounded-lg">PBA</p>
-              <div className="flex items-center">
+              <div className="flex items-center gap-4">
                 <p className="text-center text-xs text-[#C9BBE8]">12/06/2023</p>
                 <p className="text-center text-xs text-[#C9BBE8]">●</p>
                 <p className="text-center text-xs text-[#C9BBE8]">04:00 PM</p>
@@ -94,12 +104,12 @@ const BettorPlaceBet = (props: BettorPlaceBetProps) => {
             <div className="flex flex-col justify-center items-center rounded-md bg-[#391A80] px-4 py-8 mx-auto w-[90%] md:w-1/3  mt-4">
               <p className="text-md text-[#7351C3]">Your Bets:</p>
               <div className="flex flex-wrap items-center justify-center  mt-5">
-                {betConstant.map((bet: any) => (
+                {betPairs.pairs.map((bet: any) => (
                   <div
                     key={bet}
                     className="px-4 py-1 mr-2 mt-4 bg-[#4922A4] text-[#EEE9F8] font-semibold text-lg rounded-md"
                   >
-                    {bet.pairs}
+                    {bet}
                   </div>
                 ))}
               </div>
@@ -108,15 +118,17 @@ const BettorPlaceBet = (props: BettorPlaceBetProps) => {
             <div className="flex flex-col justify-center items-center rounded-md bg-[#391A80] px-4 py-8 mx-auto w-[90%] md:w-1/3  mt-4 gap-4">
               <div className="flex justify-between text-[#EEE9F8] w-full">
                 <p className="font-medium text-md">Bet Price</p>
-                <p className="font-medium text-md">₱ 30</p>
+                <p className="font-medium text-md">₱ {props.betPrice}</p>
               </div>
               <div className="flex justify-between text-[#EEE9F8] w-full">
                 <p className="font-medium text-md">Bet Count</p>
-                <p className="font-medium text-md">10</p>
+                <p className="font-medium text-md">{props.betCount}</p>
               </div>
               <div className="flex justify-between text-[#EEE9F8] w-full">
                 <p className="font-medium text-xl">Total</p>
-                <p className="font-medium text-xl">₱ 300</p>
+                <p className="font-medium text-xl">
+                  ₱ {(props.betPrice ?? 0) * (props.betCount ?? 0)}
+                </p>
               </div>
               <div className="flex items-center w-full gap-4">
                 <button
